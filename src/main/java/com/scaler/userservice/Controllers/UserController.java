@@ -1,10 +1,12 @@
 package com.scaler.userservice.Controllers;
 
 import com.scaler.userservice.Dtos.*;
+import com.scaler.userservice.Exceptions.ValidTokenNotFoundException;
 import com.scaler.userservice.Models.Token;
 import com.scaler.userservice.Models.User;
 import com.scaler.userservice.Services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -38,7 +40,13 @@ public class UserController {
     }
     @GetMapping("/logout")
     public ResponseEntity<Void> logout(LogoutRequestDto requestDto) {
-        return null;
+        ResponseEntity<Void> responseEntity = null;
+        userService.logout(requestDto.getTokenValue());
+        responseEntity = new ResponseEntity<>(
+                HttpStatus.OK
+        );
+        //TODO : Move the exception handling logic inside the Controller Advice.
+        return responseEntity;
     }
     @GetMapping("/validate")
     public UserDto validateToken(String token) {
