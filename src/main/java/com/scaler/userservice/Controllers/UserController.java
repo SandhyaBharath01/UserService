@@ -1,9 +1,6 @@
 package com.scaler.userservice.Controllers;
 
-import com.scaler.userservice.Dtos.LoginRequestDto;
-import com.scaler.userservice.Dtos.LogoutRequestDto;
-import com.scaler.userservice.Dtos.SignUpRequestDto;
-import com.scaler.userservice.Dtos.UserDto;
+import com.scaler.userservice.Dtos.*;
 import com.scaler.userservice.Models.Token;
 import com.scaler.userservice.Models.User;
 import com.scaler.userservice.Services.UserService;
@@ -31,8 +28,13 @@ public class UserController {
 
     }
     @PostMapping("/login")
-    public Token login(@RequestBody LoginRequestDto requestDto){
-        return null;
+    public TokenDto login(@RequestBody LoginRequestDto requestDto){
+        Token token = userService.login(
+                requestDto.getEmail(),
+                requestDto.getPassword()
+        );
+        //Convert token to TokenDto
+        return TokenDto.from(token);
     }
     @GetMapping("/logout")
     public ResponseEntity<Void> logout(LogoutRequestDto requestDto) {
