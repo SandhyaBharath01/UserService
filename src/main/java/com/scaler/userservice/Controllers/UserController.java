@@ -48,8 +48,14 @@ public class UserController {
         //TODO : Move the exception handling logic inside the Controller Advice.
         return responseEntity;
     }
-    @GetMapping("/validate")
-    public UserDto validateToken(String token) {
-        return null;
+    @GetMapping("/validate/{tokenValue}")
+    public UserDto validateToken(@PathVariable String tokenValue) {
+        try{
+            User user = userService.validateToken(tokenValue);
+            return UserDto.from(user);
+
+        }catch(ValidTokenNotFoundException e){
+            throw new RuntimeException(e);
+        }
     }
 }

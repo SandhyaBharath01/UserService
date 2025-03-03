@@ -1,5 +1,6 @@
 package com.scaler.userservice.Services;
 
+import com.scaler.userservice.Exceptions.ValidTokenNotFoundException;
 import com.scaler.userservice.Models.Token;
 import com.scaler.userservice.Models.User;
 import com.scaler.userservice.Repositories.TokenRepository;
@@ -71,7 +72,16 @@ public class UserServiceImp implements UserService{
     public void logout(String token) {
     }
     @Override
-    public User validateToken(String token) {
-        return null;
+    public User validateToken(String tokenValue) throws ValidTokenNotFoundException {
+        Optional<Token> optionalToken = tokenRepository.findByValueAndDeletedAndExpiryAtGreaterThan(tokenValue, false, new Date());
+        if (optionalToken.isPresent()) {
+            Token token = optionalToken.get();
+            // Token is valid, proceed with validation
+            return token.getUser();
+        } else {
+            // Token is invalid or expired, throw ValidTokenNotFoundException
+            throw new ValidTokenNotFoundException("Valid token not found");
+        }
+
     }
 }
